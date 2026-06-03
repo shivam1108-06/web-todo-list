@@ -10,7 +10,7 @@ db = SQLAlchemy(app)
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200))
+    name = db.Column(db.String(200), nullable=False)
     completed = db.Column(db.Boolean, default=False)
 
 with app.app_context():
@@ -37,7 +37,7 @@ def home():
 @app.route("/delete/<int:id>")
 def delete(id):
 
-    task = Task.query.get(id)
+    task = Task.query.get_or_404(id)
 
     db.session.delete(task)
     db.session.commit()
@@ -48,7 +48,7 @@ def delete(id):
 @app.route("/complete/<int:id>")
 def complete(id):
 
-    task = Task.query.get(id)
+    task = Task.query.get_or_404(id)
 
     task.completed = True
 
@@ -57,16 +57,19 @@ def complete(id):
     return redirect("/")
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
-
-@app.route('/edit/<int:id>', methods=['GET', 'POST'])
+@app.route("/edit/<int:id>", methods=["GET", "POST"])
 def edit(id):
+
     task = Task.query.get_or_404(id)
 
-    if request.method == 'POST':
-        task.content = request.form['content']
+    if request.method == "POST":
+        task.name = request.form["task"]
         db.session.commit()
-        return redirect('/')
 
-    return render_template('edit.html', task=task)
+        return redirect("/")
+
+    return render_template("edit.html", task=task)
+
+
+if __name__ == "__main__":
+    app.run(debug=True)

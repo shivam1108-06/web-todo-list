@@ -1,19 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Edit Task</title>
-</head>
-<body>
+{% extends 'base.html' %}
 
-    <h1>Edit Task</h1>
+{% block content %}
 
-    <form action="/edit/{{ task.id }}" method="POST">
-        <input type="text" name="content" value="{{ task.content }}">
-        <input type="submit" value="Update">
-    </form>
+<h2 class="mb-4">Edit Task</h2>
 
-    <br>
-    <a href="/">Back</a>
+<form method="POST">
 
-</body>
-</html>
+    <input
+        type="text"
+        name="task"
+        class="form-control mb-3"
+        value="{{ task.name }}"
+        required
+    >
+
+    <button class="btn btn-primary">
+        Update Task
+    </button>
+
+</form>
+
+{% endblock %}
