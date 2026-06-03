@@ -8,13 +8,16 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     completed = db.Column(db.Boolean, default=False)
 
+
 with app.app_context():
     db.create_all()
+
 
 @app.route("/", methods=["GET", "POST"])
 def home():
@@ -29,9 +32,28 @@ def home():
 
         return redirect("/")
 
-    tasks = Task.query.all()
+    search = request.args.get("search")
 
-    return render_template("index.html", tasks=tasks)
+    if search:
+        tasks = Task.query.filter(Task.name.contains(search)).all()
+    else:
+        tasks = Task.query.all()
+
+    total_tasks = Task.query.count()
+
+    completed_tasks = Task.query.filter_by(
+        completed=True
+    ).count()
+
+    pending_tasks = total_tasks - completed_tasks
+
+    return render_template(
+        "index.html",
+        tasks=tasks,
+        total_tasks=total_tasks,
+        completed_tasks=completed_tasks,
+        pending_tasks=pending_tasks
+    )
 
 
 @app.route("/delete/<int:id>")
@@ -64,11 +86,15 @@ def edit(id):
 
     if request.method == "POST":
         task.name = request.form["task"]
+
         db.session.commit()
 
         return redirect("/")
 
-    return render_template("edit.html", task=task)
+    return render_template(
+        "edit.html",
+        task=task
+    )
 
 
 if __name__ == "__main__":
