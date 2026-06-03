@@ -8,16 +8,25 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+# ------------------
+# Database Model
+# ------------------
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), nullable=False)
+    name = db.Column(db.String(200))
     completed = db.Column(db.Boolean, default=False)
 
+# ------------------
+# Create Database
+# ------------------
 
 with app.app_context():
     db.create_all()
 
+# ------------------
+# Home Page
+# ------------------
 
 @app.route("/", methods=["GET", "POST"])
 def home():
@@ -39,22 +48,11 @@ def home():
     else:
         tasks = Task.query.all()
 
-    total_tasks = Task.query.count()
+    return render_template("index.html", tasks=tasks)
 
-    completed_tasks = Task.query.filter_by(
-        completed=True
-    ).count()
-
-    pending_tasks = total_tasks - completed_tasks
-
-    return render_template(
-        "index.html",
-        tasks=tasks,
-        total_tasks=total_tasks,
-        completed_tasks=completed_tasks,
-        pending_tasks=pending_tasks
-    )
-
+# ------------------
+# Delete Task
+# ------------------
 
 @app.route("/delete/<int:id>")
 def delete(id):
@@ -66,6 +64,9 @@ def delete(id):
 
     return redirect("/")
 
+# ------------------
+# Complete Task
+# ------------------
 
 @app.route("/complete/<int:id>")
 def complete(id):
@@ -78,23 +79,20 @@ def complete(id):
 
     return redirect("/")
 
+# ------------------
+# Edit Task
+# ------------------
 
-@app.route("/edit/<int:id>", methods=["GET", "POST"])
+@app.route('/edit/<int:id>', methods=['GET', 'POST'])
 def edit(id):
-
     task = Task.query.get_or_404(id)
 
-    if request.method == "POST":
-        task.name = request.form["task"]
-
+    if request.method == 'POST':
+        task.name = request.form['task']
         db.session.commit()
+        return redirect('/')
 
-        return redirect("/")
-
-    return render_template(
-        "edit.html",
-        task=task
-    )
+    return render_template('edit.html', task=task)
 
 
 if __name__ == "__main__":

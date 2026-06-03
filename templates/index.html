@@ -2,156 +2,114 @@
 
 {% block content %}
 
-<div class="hero">
+<div class="container mt-5">
 
-    <h1>My Todo List</h1>
+    <h1 class="text-center mb-4">
+        📝 My Todo List
+    </h1>
 
-    <p>
-        Manage your daily tasks efficiently
-    </p>
+    <form action="/" method="POST" class="row g-2 mb-4">
 
-</div>
-
-<div class="row text-center mb-4">
-
-    <div class="col-md-4">
-        <div class="card shadow p-3">
-            <h3>{{ total_tasks }}</h3>
-            <p>Total Tasks</p>
+        <div class="col-md-10">
+            <input
+                type="text"
+                name="task"
+                class="form-control"
+                placeholder="Enter New Task"
+                required>
         </div>
-    </div>
 
-    <div class="col-md-4">
-        <div class="card shadow p-3">
-            <h3>{{ completed_tasks }}</h3>
-            <p>Completed</p>
+        <div class="col-md-2">
+            <button
+                type="submit"
+                class="btn btn-primary w-100">
+                Add Task
+            </button>
         </div>
-    </div>
 
-    <div class="col-md-4">
-        <div class="card shadow p-3">
-            <h3>{{ pending_tasks }}</h3>
-            <p>Pending</p>
+    </form>
+
+    {% if tasks|length < 1 %}
+
+        <div class="alert alert-info text-center">
+            No Tasks Available. Add Your First Task!
         </div>
-    </div>
+
+    {% else %}
+
+    <table class="table table-bordered table-hover">
+
+        <thead class="table-dark">
+
+            <tr>
+                <th>ID</th>
+                <th>Task Name</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            {% for task in tasks %}
+
+            <tr>
+
+                <td>{{ task.id }}</td>
+
+                <td>
+                    {% if task.completed %}
+                        <strike>{{ task.name }}</strike>
+                    {% else %}
+                        {{ task.name }}
+                    {% endif %}
+                </td>
+
+                <td>
+                    {% if task.completed %}
+                        <span class="badge bg-success">
+                            Completed
+                        </span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark">
+                            Pending
+                        </span>
+                    {% endif %}
+                </td>
+
+                <td>
+
+                    {% if not task.completed %}
+                    <a href="/complete/{{ task.id }}"
+                       class="btn btn-success btn-sm">
+                        Complete
+                    </a>
+                    {% endif %}
+
+                    <a href="/edit/{{ task.id }}"
+                       class="btn btn-warning btn-sm">
+                        Edit
+                    </a>
+
+                    <a href="/delete/{{ task.id }}"
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('Are you sure?')">
+                        Delete
+                    </a>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    {% endif %}
 
 </div>
-
-<form method="GET" class="mb-3">
-
-    <div class="input-group">
-
-        <input
-            type="text"
-            name="search"
-            class="form-control"
-            placeholder="Search Task"
-        >
-
-        <button class="btn btn-dark">
-            Search
-        </button>
-
-    </div>
-
-</form>
-
-<div class="card card-custom p-4">
-
-<form action="/" method="POST" class="d-flex gap-2">
-
-    <input
-        type="text"
-        name="task"
-        class="form-control"
-        placeholder="Enter New Task"
-        required
-    >
-
-    <button class="btn btn-primary">
-        Add Task
-    </button>
-
-</form>
-
-</div>
-
-{% if tasks|length == 0 %}
-
-<div class="alert alert-warning mt-3">
-    No matching tasks found.
-</div>
-
-{% else %}
-
-<table class="table table-bordered table-hover mt-4 bg-white">
-
-    <thead>
-
-        <tr>
-            <th>ID</th>
-            <th>Task</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
-
-    </thead>
-
-    <tbody>
-
-    {% for task in tasks %}
-
-        <tr>
-
-            <td>{{ task.id }}</td>
-
-            <td>{{ task.name }}</td>
-
-            <td>
-
-                {% if task.completed %}
-
-                <span class="badge bg-success">
-                    Completed
-                </span>
-
-                {% else %}
-
-                <span class="badge bg-warning text-dark">
-                    Pending
-                </span>
-
-                {% endif %}
-
-            </td>
-
-            <td>
-
-                <a href="/complete/{{ task.id }}"
-                   class="btn btn-success btn-sm">
-                    Complete
-                </a>
-
-                <a href="/edit/{{ task.id }}"
-                   class="btn btn-warning btn-sm">
-                    Edit
-                </a>
-
-                <a href="/delete/{{ task.id }}"
-                   class="btn btn-danger btn-sm">
-                    Delete
-                </a>
-
-            </td>
-
-        </tr>
-
-    {% endfor %}
-
-    </tbody>
-
-</table>
-
-{% endif %}
 
 {% endblock %}
