@@ -7,6 +7,50 @@
     <h1 class="text-center mb-4">
         📝 My Todo List
     </h1>
+<div class="hero">
+
+    <h1>🚀 Shivam Todo Manager</h1>
+
+    <p>
+        Organize your daily tasks efficiently
+    </p>
+
+</div>
+
+<div class="row mb-4">
+
+    <div class="col-md-4">
+        <div class="card text-center shadow">
+            <div class="card-body">
+                <h5>Total Tasks</h5>
+                <h2>{{ tasks|length }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-center shadow">
+            <div class="card-body">
+                <h5>Completed</h5>
+                <h2>
+                    {{ tasks|selectattr('completed', 'equalto', True)|list|length }}
+                </h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-center shadow">
+            <div class="card-body">
+                <h5>Pending</h5>
+                <h2>
+                    {{ tasks|selectattr('completed', 'equalto', False)|list|length }}
+                </h2>
+            </div>
+        </div>
+    </div>
+
+</div>
 
     <form action="/" method="POST" class="row g-2 mb-4">
 
