@@ -42,13 +42,22 @@ def home():
         return redirect("/")
 
     search = request.args.get("search")
+    filter_type = request.args.get("filter")
+
+    tasks = Task.query
 
     if search:
-        tasks = Task.query.filter(
+        tasks = tasks.filter(
             Task.name.contains(search)
-        ).all()
-    else:
-        tasks = Task.query.all()
+        )
+
+    if filter_type == "completed":
+        tasks = tasks.filter_by(completed=True)
+
+    elif filter_type == "pending":
+        tasks = tasks.filter_by(completed=False)
+
+    tasks = tasks.all()
 
     return render_template(
         "index.html",
