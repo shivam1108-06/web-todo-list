@@ -14,7 +14,7 @@ db = SQLAlchemy(app)
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200))
+    name = db.Column(db.String(200), nullable=False)
     completed = db.Column(db.Boolean, default=False)
 
 # ------------------
@@ -41,15 +41,16 @@ def home():
 
         return redirect("/")
 
+    # Search
     search = request.args.get("search")
+
+    # Filter
     filter_type = request.args.get("filter")
 
     tasks = Task.query
 
     if search:
-        tasks = tasks.filter(
-            Task.name.contains(search)
-        )
+        tasks = tasks.filter(Task.name.contains(search))
 
     if filter_type == "completed":
         tasks = tasks.filter_by(completed=True)
@@ -59,9 +60,23 @@ def home():
 
     tasks = tasks.all()
 
+    # Dashboard Counters
+    total_tasks = Task.query.count()
+
+    completed_tasks = Task.query.filter_by(
+        completed=True
+    ).count()
+
+    pending_tasks = Task.query.filter_by(
+        completed=False
+    ).count()
+
     return render_template(
         "index.html",
-        tasks=tasks
+        tasks=tasks,
+        total_tasks=total_tasks,
+        completed_tasks=completed_tasks,
+        pending_tasks=pending_tasks
     )
 
 # ------------------
@@ -97,17 +112,26 @@ def complete(id):
 # Edit Task
 # ------------------
 
-@app.route('/edit/<int:id>', methods=['GET', 'POST'])
+@app.route("/edit/<int:id>", methods=["GET", "POST"])
 def edit(id):
+
     task = Task.query.get_or_404(id)
 
-    if request.method == 'POST':
-        task.name = request.form['task']
+    if request.method == "POST":
+        task.name = request.form["task"]
+
         db.session.commit()
-        return redirect('/')
 
-    return render_template('edit.html', task=task)
+        return redirect("/")
 
+    return render_template(
+        "edit.html",
+        task=task
+    )
+
+# ------------------
+# Run App
+# ------------------
 
 if __name__ == "__main__":
     app.run(debug=True)
