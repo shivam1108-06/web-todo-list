@@ -72,12 +72,12 @@ def home():
     ).count()
 
     return render_template(
-        "index.html",
-        tasks=tasks,
-        total_tasks=total_tasks,
-        completed_tasks=completed_tasks,
-        pending_tasks=pending_tasks
-    )
+    "index.html",
+    tasks=tasks,
+    total_tasks=total_tasks,
+    completed_tasks=completed_tasks,
+    pending_tasks=pending_tasks
+)
 
 # ------------------
 # Delete Task
