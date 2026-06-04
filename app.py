@@ -44,11 +44,16 @@ def home():
     search = request.args.get("search")
 
     if search:
-        tasks = Task.query.filter(Task.name.contains(search)).all()
+        tasks = Task.query.filter(
+            Task.name.contains(search)
+        ).all()
     else:
         tasks = Task.query.all()
 
-    return render_template("index.html", tasks=tasks)
+    return render_template(
+        "index.html",
+        tasks=tasks
+    )
 
 # ------------------
 # Delete Task
