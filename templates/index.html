@@ -1,7 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<div class="hero">
 
+    <h1>📝 Todo Manager</h1>
+
+    <p>
+        Organize your daily tasks efficiently
+    </p>
+
+</div>
 <div class="container mt-5">
 
     <h1 class="text-center mb-4">
@@ -10,32 +18,26 @@
 
     <!-- Statistics Cards -->
 
-    <div class="row text-center mb-4">
+   <div class="row text-center mb-4">
 
     <div class="col-md-4">
-        <div class="card shadow">
-            <div class="card-body">
-                <h5>Total Tasks</h5>
-                <h2>{{ total_tasks }}</h2>
-            </div>
+        <div class="card shadow p-3">
+            <h5>Total Tasks</h5>
+            <h2>{{ total_tasks }}</h2>
         </div>
     </div>
 
     <div class="col-md-4">
-        <div class="card shadow">
-            <div class="card-body">
-                <h5>Completed</h5>
-                <h2>{{ completed_tasks }}</h2>
-            </div>
+        <div class="card shadow p-3">
+            <h5>Completed</h5>
+            <h2>{{ completed_tasks }}</h2>
         </div>
     </div>
 
     <div class="col-md-4">
-        <div class="card shadow">
-            <div class="card-body">
-                <h5>Pending</h5>
-                <h2>{{ pending_tasks }}</h2>
-            </div>
+        <div class="card shadow p-3">
+            <h5>Pending</h5>
+            <h2>{{ pending_tasks }}</h2>
         </div>
     </div>
 
@@ -88,34 +90,21 @@
 
     <form method="GET" class="row g-2 mb-4">
 
-        <div class="col-md-6">
-            <input
-                type="text"
-                name="search"
-                class="form-control"
-                placeholder="Search Task">
-        </div>
+    <div class="col-md-8">
+        <input
+            type="text"
+            name="search"
+            class="form-control"
+            placeholder="Search Task">
+    </div>
 
-        <div class="col-md-3">
-            <select
-                name="filter"
-                class="form-select">
+    <div class="col-md-4">
+        <button class="btn btn-dark w-100">
+            Search
+        </button>
+    </div>
 
-                <option value="">All Tasks</option>
-                <option value="completed">Completed</option>
-                <option value="pending">Pending</option>
-
-            </select>
-        </div>
-
-        <div class="col-md-3">
-            <button
-                class="btn btn-dark w-100">
-                Search
-            </button>
-        </div>
-
-    </form>
+</form>
 
     {% if tasks|length < 1 %}
 
