@@ -87,7 +87,7 @@ def home():
         total_tasks=total_tasks,
         completed_tasks=completed_tasks,
         pending_tasks=pending_tasks
-    )
+)
 
 
 # ------------------
