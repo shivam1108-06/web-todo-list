@@ -18,6 +18,7 @@ class Task(db.Model):
     name = db.Column(db.String(200), nullable=False)
     completed = db.Column(db.Boolean, default=False)
     priority = db.Column(db.String(20), default="Medium")
+    due_date = db.Column(db.String(20))
 
 
 # ------------------
@@ -36,12 +37,15 @@ with app.app_context():
 def home():
 
     if request.method == "POST":
+
         task_name = request.form["task"]
         priority = request.form["priority"]
+        due_date = request.form["due_date"]
 
         new_task = Task(
             name=task_name,
-            priority=priority
+            priority=priority,
+            due_date=due_date
         )
 
         db.session.add(new_task)

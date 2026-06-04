@@ -8,12 +8,14 @@
         📝 My Todo List
     </h1>
 
+    <!-- Statistics Cards -->
+
     <div class="row text-center mb-4">
 
         <div class="col-md-4">
             <div class="card bg-primary text-white">
                 <div class="card-body">
-                    <h4>{{ total_tasks }}</h4>
+                    <h3>{{ total_tasks }}</h3>
                     <p>Total Tasks</p>
                 </div>
             </div>
@@ -22,8 +24,8 @@
         <div class="col-md-4">
             <div class="card bg-success text-white">
                 <div class="card-body">
-                    <h4>{{ completed_tasks }}</h4>
-                    <p>Completed</p>
+                    <h3>{{ completed_tasks }}</h3>
+                    <p>Completed Tasks</p>
                 </div>
             </div>
         </div>
@@ -31,17 +33,19 @@
         <div class="col-md-4">
             <div class="card bg-warning text-dark">
                 <div class="card-body">
-                    <h4>{{ pending_tasks }}</h4>
-                    <p>Pending</p>
+                    <h3>{{ pending_tasks }}</h3>
+                    <p>Pending Tasks</p>
                 </div>
             </div>
         </div>
 
     </div>
 
+    <!-- Add Task Form -->
+
     <form action="/" method="POST" class="row g-2 mb-4">
 
-        <div class="col-md-7">
+        <div class="col-md-4">
             <input
                 type="text"
                 name="task"
@@ -50,7 +54,7 @@
                 required>
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-2">
             <select
                 name="priority"
                 class="form-select">
@@ -62,7 +66,15 @@
             </select>
         </div>
 
-        <div class="col-md-2">
+        <div class="col-md-3">
+            <input
+                type="date"
+                name="due_date"
+                class="form-control"
+                required>
+        </div>
+
+        <div class="col-md-3">
             <button
                 type="submit"
                 class="btn btn-primary w-100">
@@ -72,6 +84,8 @@
 
     </form>
 
+    <!-- Search & Filter -->
+
     <form method="GET" class="row g-2 mb-4">
 
         <div class="col-md-6">
@@ -79,7 +93,7 @@
                 type="text"
                 name="search"
                 class="form-control"
-                placeholder="Search Tasks">
+                placeholder="Search Task">
         </div>
 
         <div class="col-md-3">
@@ -105,9 +119,9 @@
 
     {% if tasks|length < 1 %}
 
-    <div class="alert alert-info text-center">
-        No Tasks Available. Add Your First Task!
-    </div>
+        <div class="alert alert-info text-center">
+            No Tasks Available. Add Your First Task!
+        </div>
 
     {% else %}
 
@@ -119,6 +133,7 @@
                 <th>ID</th>
                 <th>Task Name</th>
                 <th>Priority</th>
+                <th>Due Date</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -134,11 +149,13 @@
                 <td>{{ task.id }}</td>
 
                 <td>
+
                     {% if task.completed %}
                         <strike>{{ task.name }}</strike>
                     {% else %}
                         {{ task.name }}
                     {% endif %}
+
                 </td>
 
                 <td>
@@ -160,6 +177,10 @@
 
                     {% endif %}
 
+                </td>
+
+                <td>
+                    {{ task.due_date }}
                 </td>
 
                 <td>
