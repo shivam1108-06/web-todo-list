@@ -7,132 +7,59 @@
     <h1 class="text-center mb-4">
         📝 My Todo List
     </h1>
-<div class="hero">
 
-    <h1>🚀 Shivam Todo Manager</h1>
+    <div class="row text-center mb-4">
 
-    <p>
-        Organize your daily tasks efficiently
-    </p>
-
-</div>
-
-<div class="row mb-4">
-
-    <div class="col-md-4">
-        <div class="card text-center shadow">
-            <div class="card-body">
-                <h5>Total Tasks</h5>
-                <h2>{{ tasks|length }}</h2>
+        <div class="col-md-4">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h4>{{ total_tasks }}</h4>
+                    <p>Total Tasks</p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-4">
-        <div class="card text-center shadow">
-            <div class="card-body">
-                <h5>Completed</h5>
-                <h2>
-                    {{ tasks|selectattr('completed', 'equalto', True)|list|length }}
-                </h2>
+        <div class="col-md-4">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h4>{{ completed_tasks }}</h4>
+                    <p>Completed</p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-4">
-        <div class="card text-center shadow">
-            <div class="card-body">
-                <h5>Pending</h5>
-                <h2>
-                    {{ tasks|selectattr('completed', 'equalto', False)|list|length }}
-                </h2>
+        <div class="col-md-4">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <h4>{{ pending_tasks }}</h4>
+                    <p>Pending</p>
+                </div>
             </div>
         </div>
-    </div>
-
-</div>
-
-<form action="/" method="GET" class="mb-3">
-
-    <div class="input-group">
-
-        <input
-            type="text"
-            name="search"
-            class="form-control"
-            placeholder="Search Task">
-
-        <button
-            class="btn btn-dark"
-            type="submit">
-
-            Search
-
-        </button>
 
     </div>
-
-</form>
-
-<div class="row text-center mb-4">
-
-    <div class="col-md-4">
-        <div class="card border-primary">
-            <div class="card-body">
-                <h5>Total Tasks</h5>
-                <h2>{{ total_tasks }}</h2>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card border-success">
-            <div class="card-body">
-                <h5>Completed</h5>
-                <h2>{{ completed_tasks }}</h2>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card border-warning">
-            <div class="card-body">
-                <h5>Pending</h5>
-                <h2>{{ pending_tasks }}</h2>
-            </div>
-        </div>
-    </div>
-
-</div>
-
-<div class="mb-4">
-
-    <a href="/"
-       class="btn btn-primary">
-       All
-    </a>
-
-    <a href="/?filter=pending"
-       class="btn btn-warning">
-       Pending
-    </a>
-
-    <a href="/?filter=completed"
-       class="btn btn-success">
-       Completed
-    </a>
-
-</div>
 
     <form action="/" method="POST" class="row g-2 mb-4">
 
-        <div class="col-md-10">
+        <div class="col-md-7">
             <input
                 type="text"
                 name="task"
                 class="form-control"
                 placeholder="Enter New Task"
                 required>
+        </div>
+
+        <div class="col-md-3">
+            <select
+                name="priority"
+                class="form-select">
+
+                <option value="High">High</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="Low">Low</option>
+
+            </select>
         </div>
 
         <div class="col-md-2">
@@ -145,11 +72,42 @@
 
     </form>
 
+    <form method="GET" class="row g-2 mb-4">
+
+        <div class="col-md-6">
+            <input
+                type="text"
+                name="search"
+                class="form-control"
+                placeholder="Search Tasks">
+        </div>
+
+        <div class="col-md-3">
+            <select
+                name="filter"
+                class="form-select">
+
+                <option value="">All Tasks</option>
+                <option value="completed">Completed</option>
+                <option value="pending">Pending</option>
+
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <button
+                class="btn btn-dark w-100">
+                Search
+            </button>
+        </div>
+
+    </form>
+
     {% if tasks|length < 1 %}
 
-        <div class="alert alert-info text-center">
-            No Tasks Available. Add Your First Task!
-        </div>
+    <div class="alert alert-info text-center">
+        No Tasks Available. Add Your First Task!
+    </div>
 
     {% else %}
 
@@ -160,6 +118,7 @@
             <tr>
                 <th>ID</th>
                 <th>Task Name</th>
+                <th>Priority</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -183,6 +142,28 @@
                 </td>
 
                 <td>
+
+                    {% if task.priority == "High" %}
+                        <span class="badge bg-danger">
+                            High
+                        </span>
+
+                    {% elif task.priority == "Medium" %}
+                        <span class="badge bg-warning text-dark">
+                            Medium
+                        </span>
+
+                    {% else %}
+                        <span class="badge bg-success">
+                            Low
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
                     {% if task.completed %}
                         <span class="badge bg-success">
                             Completed
@@ -192,6 +173,7 @@
                             Pending
                         </span>
                     {% endif %}
+
                 </td>
 
                 <td>

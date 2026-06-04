@@ -8,6 +8,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+
 # ------------------
 # Database Model
 # ------------------
@@ -16,6 +17,8 @@ class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
     completed = db.Column(db.Boolean, default=False)
+    priority = db.Column(db.String(20), default="Medium")
+
 
 # ------------------
 # Create Database
@@ -23,6 +26,7 @@ class Task(db.Model):
 
 with app.app_context():
     db.create_all()
+
 
 # ------------------
 # Home Page
@@ -33,24 +37,27 @@ def home():
 
     if request.method == "POST":
         task_name = request.form["task"]
+        priority = request.form["priority"]
 
-        new_task = Task(name=task_name)
+        new_task = Task(
+            name=task_name,
+            priority=priority
+        )
 
         db.session.add(new_task)
         db.session.commit()
 
         return redirect("/")
 
-    # Search
     search = request.args.get("search")
-
-    # Filter
     filter_type = request.args.get("filter")
 
     tasks = Task.query
 
     if search:
-        tasks = tasks.filter(Task.name.contains(search))
+        tasks = tasks.filter(
+            Task.name.contains(search)
+        )
 
     if filter_type == "completed":
         tasks = tasks.filter_by(completed=True)
@@ -60,7 +67,6 @@ def home():
 
     tasks = tasks.all()
 
-    # Dashboard Counters
     total_tasks = Task.query.count()
 
     completed_tasks = Task.query.filter_by(
@@ -72,12 +78,13 @@ def home():
     ).count()
 
     return render_template(
-    "index.html",
-    tasks=tasks,
-    total_tasks=total_tasks,
-    completed_tasks=completed_tasks,
-    pending_tasks=pending_tasks
-)
+        "index.html",
+        tasks=tasks,
+        total_tasks=total_tasks,
+        completed_tasks=completed_tasks,
+        pending_tasks=pending_tasks
+    )
+
 
 # ------------------
 # Delete Task
@@ -92,6 +99,7 @@ def delete(id):
     db.session.commit()
 
     return redirect("/")
+
 
 # ------------------
 # Complete Task
@@ -108,6 +116,7 @@ def complete(id):
 
     return redirect("/")
 
+
 # ------------------
 # Edit Task
 # ------------------
@@ -119,7 +128,6 @@ def edit(id):
 
     if request.method == "POST":
         task.name = request.form["task"]
-
         db.session.commit()
 
         return redirect("/")
@@ -129,9 +137,6 @@ def edit(id):
         task=task
     )
 
-# ------------------
-# Run App
-# ------------------
 
 if __name__ == "__main__":
     app.run(debug=True)
